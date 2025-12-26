@@ -6,18 +6,18 @@ export default function Home() {
       <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 sm:items-start">
         <div className="flex">
           <Image
-            className="invert"
+            className="invert "
             src="/next.svg"
             alt="Next.js logo"
-            width={100}
-            height={20}
+            width={150}
+            height={50}
             priority
           />
           <Image
             src={
               "https://res.cloudinary.com/dnvnjiopg/image/upload/v1766220077/samples/cloudinary-logo-vector.svg"
             }
-            className="h-15 w-auto"
+            className=""
             alt="Cloudinary logo"
             width={200}
             height={100}

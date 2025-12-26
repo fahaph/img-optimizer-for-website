@@ -1,11 +1,12 @@
 "use client";
-import React, { useState } from "react";
+import { useState } from "react";
 import Image from "next/image";
 import { Camera } from "lucide-react";
 import { uploadImage } from "@/app/actions/cloudinary";
 import { BeatLoader } from "react-spinners";
 import { Dispatch, SetStateAction } from "react";
 import { UploadApiResponse } from "cloudinary";
+import { toast, Bounce } from "react-toastify";
 
 interface ISetResponse {
   setResponse: Dispatch<SetStateAction<UploadApiResponse | undefined>>;
@@ -32,15 +33,53 @@ export default function UploadPreview({ setResponse }: ISetResponse) {
   const handleSubmit = async () => {
     if (!fileData) return;
     setIsLoading(true);
-    const res = await uploadImage(fileData, fileName);
-    setIsLoading(false);
-    if (res) {
-      if ("public_id" in res) {
-        setFileData(null);
-        setResponse(res);
-      } else {
-        alert(`${res.message}`);
+    try {
+      const res = await uploadImage(fileData, fileName);
+      if (res) {
+        if ("public_id" in res) {
+          setFileData(null);
+          setResponse(res);
+          // console.log(res);
+          setIsLoading(false);
+          notify(true);
+        } else {
+          setIsLoading(false);
+          notify(false);
+        }
       }
+    } catch (error) {
+      console.error(error);
+      notify(false);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const notify = (success: boolean) => {
+    if (success) {
+      toast.success("Upload Completed!", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "dark",
+        transition: Bounce,
+      });
+    } else {
+      toast.error("Upload Failed! Check in Console", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "dark",
+        transition: Bounce,
+      });
     }
   };
 
