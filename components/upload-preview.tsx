@@ -42,15 +42,13 @@ export default function UploadPreview({ setResponse }: ISetResponse) {
     try {
       const res = await uploadImage(fileData, fileName);
       if (res) {
-        if ("public_id" in res) {
-          setFileData(null);
-          setResponse(res);
-          setIsLoading(false);
-          notify(true);
-        } else {
-          setIsLoading(false);
-          notify(false);
-        }
+        console.log("Upload Success:", res);
+        setFileData(null);
+        setResponse(res as UploadApiResponse); // ใช้ Type Assertion เพื่อให้ตรงกับประเภท
+        setIsLoading(false);
+        notify(true);
+      } else {
+        notify(false);
       }
     } catch (error) {
       console.error(error);
