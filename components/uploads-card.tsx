@@ -25,7 +25,7 @@ export default function UploadsCard() {
         <h1 className="text-xl font-bold w-fit mx-auto md:mx-0 mb-3">
           <span className="text-blue-500">UPLOAD</span> IMAGE{" "}
           <span className="text-sm font-normal text-neutral-300">
-            (server limits 10mb)
+            (server limits 20MB)
           </span>
         </h1>
         <div className="w-full">
