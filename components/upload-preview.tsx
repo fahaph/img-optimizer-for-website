@@ -7,6 +7,7 @@ import { BeatLoader } from "react-spinners";
 import { Dispatch, SetStateAction } from "react";
 import { UploadApiResponse } from "cloudinary";
 import { toast, Bounce } from "react-toastify";
+import { useDropzone } from "react-dropzone";
 
 interface ISetResponse {
   setResponse: Dispatch<SetStateAction<UploadApiResponse | undefined>>;
@@ -17,10 +18,9 @@ export default function UploadPreview({ setResponse }: ISetResponse) {
   const [fileName, setFileName] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
-  // ฟังก์ชันจัดการเมื่อเลือกไฟล์
-  const handleFiles = (files: FileList | null) => {
-    if (files && files[0]) {
-      const file = files[0];
+  const onDrop = (acceptedFiles: File[]) => {
+    if (acceptedFiles && acceptedFiles[0]) {
+      const file = acceptedFiles[0];
       setFileName(file.name);
       if (file.type.startsWith("image/")) {
         const reader = new FileReader();
@@ -29,6 +29,12 @@ export default function UploadPreview({ setResponse }: ISetResponse) {
       }
     }
   };
+
+  const { getRootProps, getInputProps } = useDropzone({
+    onDrop,
+    multiple: false, // Allow only one file at a time
+    accept: { "image/*": [] }, // Accept only image files
+  });
 
   const handleSubmit = async () => {
     if (!fileData) return;
@@ -39,7 +45,6 @@ export default function UploadPreview({ setResponse }: ISetResponse) {
         if ("public_id" in res) {
           setFileData(null);
           setResponse(res);
-          // console.log(res);
           setIsLoading(false);
           notify(true);
         } else {
@@ -86,15 +91,10 @@ export default function UploadPreview({ setResponse }: ISetResponse) {
   return (
     <>
       <div
+        {...getRootProps()}
         className={`relative border-2 border-dashed rounded-xl p-8 transition-all duration-200 flex flex-col items-center justify-center h-70 cursor-pointer border-gray-300 hover:border-blue-500 bg-blue-300/20`}
       >
-        {/* Input ซ่อนอยู่ข้างหลังเพื่อให้กดคลิกได้ */}
-        <input
-          type="file"
-          className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-          onChange={(e) => handleFiles(e.target.files)}
-          accept="image/*"
-        />
+        <input {...getInputProps()} />
         {fileData ? (
           <div className="relative w-full flex flex-col items-center">
             <Image
@@ -108,7 +108,9 @@ export default function UploadPreview({ setResponse }: ISetResponse) {
         ) : (
           <div className="text-center">
             <Camera className="mx-auto" color="#ffffffff" size={"60px"} />
-            <p className="text-white font-bold">คลิกเพื่อเลือกไฟล์</p>
+            <p className="text-white font-bold">
+              Drag & drop an image here, or click to select one
+            </p>
           </div>
         )}
       </div>

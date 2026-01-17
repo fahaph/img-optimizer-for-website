@@ -11,22 +11,18 @@ export async function uploadImage(fileData: string | null, fileName: string | nu
   if (fileData === null || fileName === null) return { error: "error", message: "Can't find file." };
   try {
     const res = await cloudinary.uploader.upload(fileData, {
-      chunk_size: 5000000, // กำหนดให้ส่งชุดละ 5 mb
+      chunk_size: 2500000, // กำหนดให้ส่งชุดละ 2.5 mb
       folder: "assets",
-      public_id: fileName.split(".")[0],
-      unique_filename: false,
-      overwrite: true,
+      unique_filename: true,
       resource_type: "auto",
       format: "webp",
-      invalidate: true,
       transformation: [
-        { with:2000, height: 2000, crop: "limit" },
         { quality: "auto" }
       ]
     });
     return res;
   } catch (error) {
-    console.log(error);
+    console.log(`Cloudinary Upload Error: ${error}`);
     return { error: error, message: "Upload Failed." };
   }
 }
