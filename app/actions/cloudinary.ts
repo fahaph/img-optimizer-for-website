@@ -15,9 +15,9 @@ export async function uploadImage(fileData: string | null, fileName: string | nu
       folder: "assets",
       unique_filename: true,
       resource_type: "auto",
-      format: "webp",
       transformation: [
-        { quality: "auto" }
+        { quality: "auto" },
+        { fetch_format: "auto" }
       ]
     });
     return res;
